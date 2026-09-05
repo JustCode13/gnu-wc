@@ -18,7 +18,7 @@ char *read_next_line(char *line, FILE *fptr);
 
 int validate_options(char *opt, char *options, size_t opt_len);
 
-void print_wc_result(char options[], size_t opt_len, size_t char_count,
+void print_wc_result(char *options, size_t opt_len, size_t char_count,
                      size_t word_count, size_t line_count, char *file);
 
 int main(int argc, char *argv[]) {
@@ -29,10 +29,11 @@ int main(int argc, char *argv[]) {
 
     bool is_options = false;
 
-    if (argv[1][0] == '-') {
-        size_t opt_len = strlen(argv[1]) - 1;
+    size_t opt_len = strlen(argv[1]) - 1;
 
-        char options[opt_len];
+    char options[opt_len];
+
+    if (argv[1][0] == '-') {
 
         if (validate_options(argv[1], options, opt_len) != 0) {
             return -1;
@@ -72,23 +73,41 @@ int main(int argc, char *argv[]) {
             word_count += words_count(line);
         }
 
-        printf("%zu %zu %zu %zu %s\n", char_count, char_count, word_count,
-               line_count, files[i]);
+        // printf("%zu %zu %zu %zu %s\n", char_count, char_count, word_count,
+        //        line_count, files[i]);
+
+        print_wc_result(options, opt_len, char_count, word_count, line_count,
+                        files[i]);
     }
 
     return 0;
 }
 
-void print_wc_result(char options[], size_t opt_len, size_t char_count,
+void print_wc_result(char *options, size_t opt_len, size_t char_count,
                      size_t word_count, size_t line_count, char *file) {
-    for (size_t i = 0; i < opt_len; i++) {
-        printf("%c", options[i]);
+    if (opt_len == 0) {
+        return;
     }
+
+    for (size_t i = 0; i < opt_len; i++) {
+        if ('l' == options[i]) {
+            printf("%zu ", line_count);
+        } else if ('w' == options[i]) {
+            printf("%zu ", word_count);
+        } else if ('c' == options[i]) {
+            printf("%zu ", char_count);
+        } else {
+            printf("%zu ", char_count);
+        }
+    }
+
+    printf("%s\n", file);
 }
 
 size_t words_count(char *line) {
     size_t line_length = strlen(line);
     char ch;
+
     size_t word_count = 0;
 
     bool inside_word = false;
