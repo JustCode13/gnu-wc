@@ -72,8 +72,8 @@ int main(int argc, char *argv[]) {
             word_count += words_count(line);
         }
 
-        printf("%zu %zu %zu %s\n", char_count, word_count, line_count,
-               files[i]);
+        printf("%zu %zu %zu %zu %s\n", char_count, char_count, word_count,
+               line_count, files[i]);
     }
 
     return 0;
